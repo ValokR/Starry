@@ -32,8 +32,8 @@ int connection::setup_connection() {
             exit(1);
         }
 
-        // set up connection file descriptor ***********************************
-        // loop through all results loaded into servinfo from getaddrinfo() & catch errors
+        // set up connection file descriptor, loop through all results
+        // loaded into servinfo from getaddrinfo() & catch errors
         for (p = servinfo; p != NULL; p = p->ai_next) {
             if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
                 perror("Client: connection");
@@ -84,12 +84,12 @@ int connection::setup_connection() {
         return new_fd;
     }
 
-    int connection::send_data(int sockfd, char *output, int *message_length) {
+    int connection::send_data(int sockfd, char *output, int message_length) {
         int total = 0;                          // bytes sent
-        int bytes_remaining = *message_length;  // remaining bytes to be sent
+        int bytes_remaining = message_length;   // remaining bytes to be sent
         int n;
 
-        while (total < *message_length) {
+        while (total < message_length) {
             n = send(sockfd, (output + total), bytes_remaining, 0);
             if (n == 1) {
                 break;
@@ -98,14 +98,16 @@ int connection::setup_connection() {
             bytes_remaining -= n;
         }
 
-        *message_length = total;    // number of bytes sent successfully
+        message_length = total;    // number of bytes sent successfully
         return (n == -1) ? -1 : 0;
     }
 
-    void connection::receive_data(int sockfd, char *incoming_stream, int max_buffer_length) {
+    int connection::receive_data(int sockfd, char *incoming_stream, int max_buffer_length) {
         int n = recv(sockfd, incoming_stream, MAX_BUFFER_LENGTH, 0);
         if (n == -1) {
             perror("receive");
         }
+
+        return n;
     }
 

@@ -9,9 +9,9 @@ class connection {
 public:
     int setup_connection();
 
-    static int send_data(int sockfd, char *output, int *message_length);
+    static int send_data(int sockfd, char *output, int message_length);
 
-    void receive_data(int sockfd, char *incoming_stream, int max_buffer_length);
+    int receive_data(int sockfd, char *incoming_stream, int max_buffer_length);
 };
 
 #endif //STARRY_CONNECTION_H
